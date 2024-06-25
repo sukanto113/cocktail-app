@@ -4,6 +4,7 @@ import com.cocktail.app.model.FileUploadResponse;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,21 @@ import java.util.UUID;
 @RequestMapping("/file")
 public class FileController {
 
+    @GetMapping("/image/{filename}")
+    @ResponseBody
+    public ResponseEntity<Resource> serveImage(@PathVariable String filename) throws MalformedURLException {
+        String fileDir = Paths.get(System.getProperty("user.dir")).getParent().toString() + "/file/image";
+        Path rootLocation = Paths.get(fileDir);
+        Path file = rootLocation.resolve(filename);
+        System.out.println(file);
+        Resource resource = new UrlResource(file.toUri());
+        if (resource.exists() || resource.isReadable()) {
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/upload/{filename}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws MalformedURLException {
@@ -34,7 +50,6 @@ public class FileController {
                     "attachment; filename=\"" + filename + "\"").body(resource);
         } else {
             return ResponseEntity.notFound().build();
-
         }
     }
 
