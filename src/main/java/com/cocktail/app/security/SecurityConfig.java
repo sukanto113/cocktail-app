@@ -22,8 +22,9 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((auths) -> auths.
-                        requestMatchers("/user/register").permitAll()
+                .authorizeHttpRequests((auths) -> auths
+                        .requestMatchers("/user/register").permitAll()
+                        .requestMatchers("/user/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/file/upload").authenticated()
                         .requestMatchers(HttpMethod.GET, "/file/**").permitAll()
                         .anyRequest().authenticated()
