@@ -1,6 +1,6 @@
-package com.cocktail.app;
+package com.cocktail.app.repository;
 
-import com.cocktail.app.models.UserInfo;
+import com.cocktail.app.entity.UserInfo;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<UserInfo, Long> {

@@ -1,4 +1,4 @@
-package com.cocktail.app.models;
+package com.cocktail.app.entity;
 
 import org.springframework.data.annotation.Id;
 
