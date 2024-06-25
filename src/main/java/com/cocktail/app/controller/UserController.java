@@ -27,9 +27,15 @@ public class UserController {
     }
 
     @GetMapping
-    ResponseEntity<Optional<UserInfo>> getUser(@CurrentSecurityContext(expression = "authentication.principal") Jwt jwt) {
+    ResponseEntity<ProfileInfo> getUser(@CurrentSecurityContext(expression = "authentication.principal") Jwt jwt) {
         Long userId = Long.parseLong(jwt.getSubject());
-        return ResponseEntity.ok(userRepository.findById(userId));
+        Optional<UserInfo> userInfo = userRepository.findById(userId);
+        if (userInfo.isPresent()) {
+            UserInfo user = userInfo.get();
+            return ResponseEntity.ok(new ProfileInfo(user.getFullName(), user.getEmail(), user.getPhone(), user.getPicture(), user.getStreet(), user.getCity(), user.getCountry()));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/register")
@@ -74,6 +80,5 @@ public class UserController {
         } else {
             return ResponseEntity.ok(new ChangePasswordResponse(false, "User not found"));
         }
-
     }
 }

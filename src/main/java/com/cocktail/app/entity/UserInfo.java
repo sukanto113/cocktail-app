@@ -13,6 +13,7 @@ public class UserInfo {
     private String phone;
     private  String street;
     private String city;
+    private String country;
 
     public Long getId() {
         return id;
@@ -93,6 +94,4 @@ public class UserInfo {
     public void setCountry(String country) {
         this.country = country;
     }
-
-    private  String country;
 }
