@@ -38,6 +38,25 @@ public class UserController {
         }
     }
 
+    @PostMapping
+    ResponseEntity<ProfileInfo> getUser(@RequestBody ProfileInfo formFields, @CurrentSecurityContext(expression = "authentication.principal") Jwt jwt) {
+        Long userId = Long.parseLong(jwt.getSubject());
+        Optional<UserInfo> userInfoOptional = userRepository.findById(userId);
+        if (userInfoOptional.isPresent()) {
+            UserInfo user = userInfoOptional.get();
+            user.setFullName(formFields.fullName());
+            user.setPhone(formFields.phone());
+            user.setPicture(formFields.picture());
+            user.setStreet(formFields.street());
+            user.setCity(formFields.city());
+            user.setCountry(formFields.country());
+            userRepository.save(user);
+            return ResponseEntity.ok(new ProfileInfo(user.getFullName(), user.getEmail(), user.getPhone(), user.getPicture(), user.getStreet(), user.getCity(), user.getCountry()));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping("/register")
     ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationForm formFields) {
         UserInfo newUser = new UserInfo();
