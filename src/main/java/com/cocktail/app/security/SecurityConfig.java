@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/categories/**").permitAll()
                         .requestMatchers("/product/**").permitAll()
                         .requestMatchers("/top-rated").permitAll()
+                        .requestMatchers("/cocktail-of-the-day/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/file/profile-picture").authenticated()
                         .requestMatchers(HttpMethod.GET, "/file/**").permitAll()
                         .anyRequest().authenticated()

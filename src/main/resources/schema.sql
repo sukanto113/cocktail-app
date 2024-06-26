@@ -46,3 +46,10 @@ CREATE TABLE rating
     review TEXT NOT NULL,
     CONSTRAINT uc_user_product UNIQUE(user_id, product_id)
 );
+
+CREATE TABLE cocktail_of_the_day
+(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date DATE NOT NULL,
+    product_id INT NOT NULL
+);
