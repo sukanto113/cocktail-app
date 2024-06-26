@@ -18,3 +18,13 @@ CREATE TABLE category
     name VARCHAR(256) NOT NULL,
     picture VARCHAR(256) NOT NULL
 );
+
+CREATE TABLE product
+(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    picture VARCHAR(256) NOT NULL,
+    ingredients TEXT NOT NULL,
+    method TEXT NOT NULL
+);

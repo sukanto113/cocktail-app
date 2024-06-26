@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auths) -> auths
                         .requestMatchers("/user/register").permitAll()
                         .requestMatchers("/user/login").permitAll()
-                        .requestMatchers("/categories").permitAll()
+                        .requestMatchers("/categories/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/file/profile-picture").authenticated()
                         .requestMatchers(HttpMethod.GET, "/file/**").permitAll()
                         .anyRequest().authenticated()
