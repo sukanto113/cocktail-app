@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers("/user/register").permitAll()
                         .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/categories/**").permitAll()
+                        .requestMatchers("/product/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/file/profile-picture").authenticated()
                         .requestMatchers(HttpMethod.GET, "/file/**").permitAll()
                         .anyRequest().authenticated()
