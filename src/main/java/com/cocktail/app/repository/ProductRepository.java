@@ -1,7 +1,7 @@
 package com.cocktail.app.repository;
 
 import com.cocktail.app.entity.Product;
-import com.cocktail.app.entity.ProductWithCategory;
+import com.cocktail.app.model.ProductWithCategory;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

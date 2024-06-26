@@ -1,8 +1,7 @@
 package com.cocktail.app.controller;
 
 import com.cocktail.app.entity.Category;
-import com.cocktail.app.entity.Product;
-import com.cocktail.app.entity.ProductWithCategory;
+import com.cocktail.app.model.ProductWithCategory;
 import com.cocktail.app.repository.CategoryRepository;
 import com.cocktail.app.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;

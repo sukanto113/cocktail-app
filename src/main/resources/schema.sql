@@ -28,3 +28,11 @@ CREATE TABLE product
     ingredients TEXT NOT NULL,
     method TEXT NOT NULL
 );
+
+CREATE TABLE favorite
+(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    CONSTRAINT uc_user_product UNIQUE(user_id, product_id)
+);
