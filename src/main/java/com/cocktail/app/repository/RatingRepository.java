@@ -12,4 +12,7 @@ public interface RatingRepository extends CrudRepository<Rating, Long> {
     @Query("SELECT AVG(rating) AS average_rating FROM rating WHERE product_id=:productId GROUP BY product_id;")
     Optional<Double> getAverageRating(@Param("productId") Long productId);
 
+    @Query("SELECT product_id FROM rating GROUP BY product_id ORDER BY AVG(rating) DESC LIMIT 1;")
+    Optional<Long> getTopRatedProductId();
+
 }
