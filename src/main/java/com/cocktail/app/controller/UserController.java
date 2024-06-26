@@ -68,6 +68,9 @@ public class UserController {
 
     @PostMapping("/register")
     ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationForm formFields) {
+        if(userRepository.findByEmail(formFields.email()) != null) {
+            return ResponseEntity.ok(new RegistrationResponse(false, null, "Email already exists"));
+        }
         UserInfo newUser = new UserInfo();
         newUser.setFullName(formFields.fullName());
         newUser.setEmail(formFields.email());

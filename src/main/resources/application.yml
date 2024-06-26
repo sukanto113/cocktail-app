@@ -1,14 +1,14 @@
-#spring:
+spring:
 #  datasource:
 #    url: jdbc:mysql://localhost:3306/cocktail?createDatabaseIfNotExist=true
 #    username: root
 #    password: 3898
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-jwt:
-  secretKey: t6pbutmIxWNzcK6vq7lVz2IfYWbNRyisScZOFe1sKbM=
-
-spring:
   servlet:
     multipart:
       max-file-size: 128MB
       max-request-size: 128MB
+jwt:
+  secretKey: t6pbutmIxWNzcK6vq7lVz2IfYWbNRyisScZOFe1sKbM=
+
+
