@@ -8,6 +8,8 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/rating")
 public class RatingController {
@@ -18,14 +20,20 @@ public class RatingController {
     }
 
     @GetMapping
-    ResponseEntity<RatingResponseForUser> get(@RequestBody RatingForUserForm formFields, @CurrentSecurityContext(expression = "authentication.principal") Jwt jwt) {
+    ResponseEntity<ProductRatingResponse> get(@RequestBody RatingGetForm formFields, @CurrentSecurityContext(expression = "authentication.principal") Jwt jwt) {
         Long userId = Long.parseLong(jwt.getSubject());
         Long productId = formFields.productId();
         Rating existing = ratingRepository.findByUserIdAndProductId(userId, productId);
+        Optional<Double> averageRatingOptional = ratingRepository.getAverageRating(productId);
+        Double averageRating = null;
+        if (averageRatingOptional.isPresent()) {
+            averageRating = averageRatingOptional.get();
+        }
+        System.out.println();
         if (existing != null) {
-            return ResponseEntity.ok(new RatingResponseForUser(existing.getRating(), existing.getReview()));
+            return ResponseEntity.ok(new ProductRatingResponse(averageRating, existing.getRating(), existing.getReview()));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(new ProductRatingResponse(averageRating, null, null));
         }
     }
 
