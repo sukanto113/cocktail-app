@@ -2,6 +2,7 @@ package com.cocktail.app.controller;
 
 import com.cocktail.app.entity.Category;
 import com.cocktail.app.entity.Product;
+import com.cocktail.app.entity.ProductWithCategory;
 import com.cocktail.app.repository.CategoryRepository;
 import com.cocktail.app.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Iterable<Product>> productByCategory(@PathVariable Long categoryId) {
-        return ResponseEntity.ok(productRepository.findByCategoryId(categoryId));
+    public ResponseEntity<Iterable<ProductWithCategory>> productByCategory(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(productRepository.findByCategoryIdWithCategoryName(categoryId));
     }
 }
