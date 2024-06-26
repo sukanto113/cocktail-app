@@ -8,6 +8,22 @@ spring:
     multipart:
       max-file-size: 128MB
       max-request-size: 128MB
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: sukanto113@gmail.com
+    password:
+    protocol: smtp
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          ssl:
+            enable: true
+          auth: true
+          starttls:
+            enable: true
 jwt:
   secretKey: t6pbutmIxWNzcK6vq7lVz2IfYWbNRyisScZOFe1sKbM=
 

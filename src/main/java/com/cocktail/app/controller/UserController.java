@@ -4,6 +4,8 @@ import com.cocktail.app.model.*;
 import com.cocktail.app.entity.UserInfo;
 import com.cocktail.app.repository.UserRepository;
 import com.cocktail.app.security.JwtService;
+import com.cocktail.app.service.EmailService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -11,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.Random;
 
@@ -22,11 +25,12 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
+    private final EmailService emailService;
 
-
-    private UserController(UserRepository userRepository, JwtService jwtService) {
+    private UserController(UserRepository userRepository, JwtService jwtService, EmailService emailService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -117,12 +121,15 @@ public class UserController {
     }
 
     @PostMapping("forgot-password")
-    ResponseEntity<ForgotPasswordResponse> forgotPassword(@RequestBody ForgotPasswordForm formFields) {
+    ResponseEntity<ForgotPasswordResponse> forgotPassword(@RequestBody ForgotPasswordForm formFields) throws MessagingException, UnsupportedEncodingException {
         String email = formFields.email();
+        UserInfo user = userRepository.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.ok(new ForgotPasswordResponse(false, null, "User not found"));
+        }
         Random random = new Random();
         int otp = 100000 + random.nextInt(900000);
-        // send otp email
-        System.out.println(otp);
+        emailService.sendOtpEmail(email, String.valueOf(otp));
         String otpKey = encoder.encode(email + secretKey + otp);
         return ResponseEntity.ok(new ForgotPasswordResponse(true, otpKey, null));
     }
