@@ -36,3 +36,13 @@ CREATE TABLE favorite
     product_id INT NOT NULL,
     CONSTRAINT uc_user_product UNIQUE(user_id, product_id)
 );
+
+CREATE TABLE rating
+(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    rating INT NOT NULL,
+    review TEXT NOT NULL,
+    CONSTRAINT uc_user_product UNIQUE(user_id, product_id)
+);
