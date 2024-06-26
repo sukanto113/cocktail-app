@@ -4,7 +4,7 @@ import com.cocktail.app.model.*;
 import com.cocktail.app.entity.UserInfo;
 import com.cocktail.app.repository.UserRepository;
 import com.cocktail.app.security.JwtService;
-import org.apache.juli.logging.Log;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,10 +12,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    @Value("${jwt.secretKey}")
+    private String secretKey;
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
@@ -44,19 +47,19 @@ public class UserController {
         Optional<UserInfo> userInfoOptional = userRepository.findById(userId);
         if (userInfoOptional.isPresent()) {
             UserInfo user = userInfoOptional.get();
-            if (formFields.fullName() != null){
+            if (formFields.fullName() != null) {
                 user.setFullName(formFields.fullName());
             }
-            if(formFields.phone() != null) {
+            if (formFields.phone() != null) {
                 user.setPhone(formFields.phone());
             }
-            if(formFields.street() != null) {
+            if (formFields.street() != null) {
                 user.setStreet(formFields.street());
             }
-            if(formFields.city() != null){
+            if (formFields.city() != null) {
                 user.setCity(formFields.city());
             }
-            if(formFields.country() != null) {
+            if (formFields.country() != null) {
                 user.setCountry(formFields.country());
             }
             userRepository.save(user);
@@ -68,7 +71,7 @@ public class UserController {
 
     @PostMapping("/register")
     ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationForm formFields) {
-        if(userRepository.findByEmail(formFields.email()) != null) {
+        if (userRepository.findByEmail(formFields.email()) != null) {
             return ResponseEntity.ok(new RegistrationResponse(false, null, "Email already exists"));
         }
         UserInfo newUser = new UserInfo();
@@ -110,6 +113,50 @@ public class UserController {
             }
         } else {
             return ResponseEntity.ok(new ChangePasswordResponse(false, "User not found"));
+        }
+    }
+
+    @PostMapping("forgot-password")
+    ResponseEntity<ForgotPasswordResponse> forgotPassword(@RequestBody ForgotPasswordForm formFields) {
+        String email = formFields.email();
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        // send otp email
+        System.out.println(otp);
+        String otpKey = encoder.encode(email + secretKey + otp);
+        return ResponseEntity.ok(new ForgotPasswordResponse(true, otpKey, null));
+    }
+
+    @PostMapping("forgot-password/veirfy-otp")
+    ResponseEntity<VerifyOtpResponse> verifyOtp(@RequestBody VerifyOtpForm formFields) {
+        String email = formFields.email();
+        String otp = formFields.otp();
+        String otpKey = formFields.otpKey();
+        if (encoder.matches(email + secretKey + otp, otpKey)) {
+            return ResponseEntity.ok(new VerifyOtpResponse(true, null));
+        } else {
+            return ResponseEntity.ok(new VerifyOtpResponse(false, "Wrong otp"));
+        }
+    }
+
+    @PostMapping("forgot-password/reset-password")
+    ResponseEntity<LoginResponse> resetPassword(@RequestBody ResetPasswordForm form) {
+        String email = form.email();
+        String otp = form.otp();
+        String otpKey = form.otpKey();
+        String newPassword = form.newPassword();
+        if (encoder.matches(email + secretKey + otp, otpKey)) {
+            UserInfo user = userRepository.findByEmail(email);
+            if (user != null) {
+                user.setPassword(encoder.encode(newPassword));
+                userRepository.save(user);
+                String token = jwtService.createToken(user.getId().toString());
+                return ResponseEntity.ok(new LoginResponse(true, token, null));
+            } else {
+                return ResponseEntity.ok(new LoginResponse(false, null, "User not found"));
+            }
+        } else {
+            return ResponseEntity.ok(new LoginResponse(false, null, "Wrong otp"));
         }
     }
 }
