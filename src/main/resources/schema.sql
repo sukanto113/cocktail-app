@@ -44,7 +44,7 @@ CREATE TABLE rating
     product_id INT NOT NULL,
     rating INT NOT NULL,
     review TEXT NOT NULL,
-    CONSTRAINT uc_user_product UNIQUE(user_id, product_id)
+    CONSTRAINT rating_user_product UNIQUE(user_id, product_id)
 );
 
 CREATE TABLE cocktail_of_the_day
