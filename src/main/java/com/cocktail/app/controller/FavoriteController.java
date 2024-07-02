@@ -39,4 +39,16 @@ public class FavoriteController {
         favoriteRepository.save(favorite);
         return ResponseEntity.ok(new FavoriteAddResponse(true, null));
     }
+
+    @DeleteMapping
+    ResponseEntity<FavoriteAddResponse> deleteFavorite(@RequestBody FavoriteAddForm formFields, @CurrentSecurityContext(expression = "authentication.principal") Jwt jwt) {
+        Long userId = Long.parseLong(jwt.getSubject());
+        Long productId = formFields.productId();
+        Favorite existing = favoriteRepository.findByUserIdAndProductId(userId, productId);
+        if (existing == null) {
+            return ResponseEntity.ok(new FavoriteAddResponse(false, "Not favorite"));
+        }
+        favoriteRepository.delete(existing);
+        return ResponseEntity.ok(new FavoriteAddResponse(true, null));
+    }
 }
