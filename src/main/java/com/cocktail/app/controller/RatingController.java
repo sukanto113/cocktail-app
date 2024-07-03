@@ -19,6 +19,12 @@ public class RatingController {
         this.ratingRepository = ratingRepository;
     }
 
+    @GetMapping("my")
+    ResponseEntity<Iterable<ProductWithMyReview>> myRatting(@CurrentSecurityContext(expression = "authentication.principal") Jwt jwt) {
+        Long userId = Long.parseLong(jwt.getSubject());
+        return ResponseEntity.ok(ratingRepository.findByUserId(userId));
+    }
+
     @GetMapping
     ResponseEntity<ProductRatingResponse> get(@RequestBody RatingGetForm formFields, @CurrentSecurityContext(expression = "authentication.principal") Jwt jwt) {
         Long userId = Long.parseLong(jwt.getSubject());
@@ -29,7 +35,6 @@ public class RatingController {
         if (averageRatingOptional.isPresent()) {
             averageRating = averageRatingOptional.get();
         }
-        System.out.println();
         if (existing != null) {
             return ResponseEntity.ok(new ProductRatingResponse(averageRating, existing.getRating(), existing.getReview()));
         } else {
