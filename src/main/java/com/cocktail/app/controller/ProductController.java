@@ -17,6 +17,11 @@ public class ProductController {
         this.productRepository = productRepository;
     }
 
+    @GetMapping
+    ResponseEntity<Iterable<ProductWithCategory>> getAll() {
+        return ResponseEntity.ok(productRepository.findProductsWithCategoryName());
+    }
+
     @GetMapping("/{productId}")
     ResponseEntity<ProductWithCategory> get(@PathVariable Long productId) {
         return ResponseEntity.ok(productRepository.findByProductIdWithCategoryName(productId));
