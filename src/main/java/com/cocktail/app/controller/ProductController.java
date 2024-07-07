@@ -1,6 +1,7 @@
 package com.cocktail.app.controller;
 
 import com.cocktail.app.model.ProductWithCategory;
+import com.cocktail.app.model.ProductWithCategoryAndRating;
 import com.cocktail.app.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,8 @@ public class ProductController {
     }
 
     @GetMapping
-    ResponseEntity<Iterable<ProductWithCategory>> getAll() {
-        return ResponseEntity.ok(productRepository.findProductsWithCategoryName());
+    ResponseEntity<Iterable<ProductWithCategoryAndRating>> getAll() {
+        return ResponseEntity.ok(productRepository.findProductsWithCategoryNameAndRating());
     }
 
     @GetMapping("/{productId}")
